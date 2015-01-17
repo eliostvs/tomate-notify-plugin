@@ -1,0 +1,11 @@
+gir1.2-notify-0.7
+notify-osd
+python-blinker
+python-coverage
+python-enum34
+python-gi
+python-mock
+python-nose
+python-paver
+python-xdg
+python-yapsy

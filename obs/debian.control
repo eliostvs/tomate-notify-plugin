@@ -1,0 +1,20 @@
+Source: tomate-notify-plugin
+Section: python
+Priority: optional
+Build-Depends: debhelper (>= 8),
+ python (>= 2.6.6-3~),
+ python-setuptools
+Maintainer: Elio Esteves Duarte <elio.esteves.duarte@gmail.com>
+Standards-Version: 3.9.5
+X-Python-Version: >= 2.6
+Homepage: https://github.com/eliostvs/tomate-notify-plugin
+
+Package: tomate-notify-plugin
+Architecture: all
+Depends: ${misc:Depends},
+ ${python:Depends},
+  gir1.2-notify-0.7,
+  notify-osd,
+  python-gi,
+  tomate-gtk
+Description: Tomate plugin. Shows screen notifications.
