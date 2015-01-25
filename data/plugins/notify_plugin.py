@@ -25,19 +25,14 @@ class NotifyPlugin(TomatePlugin):
         'shortbreak': (_('Short break'), _('Go take a coffee!')),
         'longbreak': (_('Long break'), _('Time to rest. Go take a walk!'))}
 
-    def __init__(self):
-        super(NotifyPlugin, self).__init__()
+    def on_init(self):
         self.profile = ProfileManagerSingleton.get()
         self.iconpath = self.profile.get_icon_path('tomate', 32)
 
-    def activate(self):
-        super(NotifyPlugin, self).activate()
+    def on_activate(self):
+        Notify.init('Tomate')
 
-        Notify.init('tomate')
-
-    def deactivate(self):
-        super(NotifyPlugin, self).deactivate()
-
+    def on_deactivate(self):
         Notify.uninit()
 
     def on_pomodoro_started_signal(self, sender=None, **kwargs):
