@@ -15,15 +15,26 @@ logger = logging.getLogger(__name__)
 class NotifyPlugin(TomatePlugin):
 
     signals = (
-        ('session_started', 'on_pomodoro_started_signal'),
-        ('session_ended', 'on_pomodoro_finished_signal'),
+        ('session_started', 'on_session_started'),
+        ('session_ended', 'on_session_ended'),
     )
 
     messages = {
-        'finished': (_('Take a break!'), _('The time is up!')),
-        'pomodoro': (_('Pomodoro'), _("It's time to work. Focus now!")),
-        'shortbreak': (_('Short break'), _('Go take a coffee!')),
-        'longbreak': (_('Long break'), _('Time to rest. Go take a walk!'))}
+        'pomodoro': {
+            'name': _('Pomodoro'),
+            'start': _("It's time to work!"),
+        },
+
+        'shortbreak': {
+            'name': _('Short Break'),
+            'start': _("Go take a coffee!"),
+        },
+
+        'longbreak': {
+            'name': _('Long Break'),
+            'start': _("Got take a walk!"),
+        },
+    }
 
     def on_init(self):
         self.profile = ProfileManagerSingleton.get()
@@ -35,17 +46,21 @@ class NotifyPlugin(TomatePlugin):
     def on_deactivate(self):
         Notify.uninit()
 
-    def on_pomodoro_started_signal(self, sender=None, **kwargs):
+    def on_session_started(self, sender=None, **kwargs):
         task = kwargs.get('task', Task.pomodoro)
-        self.show_notification(*self.messages[task.name])
+
+        title = self.messages[task.name]['name']
+        message = self.messages[task.name]['start']
+
+        self.show_notification(title, message)
 
     @suppress_errors
-    def on_pomodoro_finished_signal(self, sender=None, **kwargs):
-        self.show_notification(*self.messages['finished'])
+    def on_session_ended(self, sender=None, **kwargs):
+        self.show_notification("The time is up!")
 
     @suppress_errors
-    def show_notification(self, title, message):
+    def show_notification(self, title, message=''):
         notify = Notify.Notification.new(title, message, self.iconpath)
         notify.show()
 
-        logger.debug('Notify %s was sent', message)
+        logger.debug('Message %s sent!', message)

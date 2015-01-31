@@ -39,25 +39,16 @@ class NotifyPluginTestCase(unittest.TestCase):
 
         self.plugin = NotifyPlugin()
 
-    def test_should_show_pomodoro_notification(self, mNotification):
-        self.plugin.on_pomodoro_started_signal()
+    def test_should_show_pomodoro_start_session_message(self, mNotification):
+        self.plugin.on_session_started()
 
-        title, message = self.plugin.messages['pomodoro']
-
-        mNotification.assert_called_once_with(title, message, self.plugin.iconpath)
-
-    def test_should_show_session_end_notification(self, mNotification):
-        self.plugin.on_pomodoro_finished_signal()
-
-        title, message = self.plugin.messages['finished']
+        title = self.plugin.messages['pomodoro']['name']
+        message = self.plugin.messages['pomodoro']['start']
 
         mNotification.assert_called_once_with(title, message, self.plugin.iconpath)
 
-    def test_should_show_short_break_notification(self, mNotification):
+    def test_should_show_end_session_message(self, mNotification):
         from tomate.pomodoro import Task
+        self.plugin.on_session_ended(task=Task.shortbreak)
 
-        self.plugin.on_pomodoro_started_signal(task=Task.shortbreak)
-
-        title, message = self.plugin.messages['shortbreak']
-
-        mNotification.assert_called_once_with(title, message, self.plugin.iconpath)
+        mNotification.assert_called_once_with("The time is up!", '', self.plugin.iconpath)
