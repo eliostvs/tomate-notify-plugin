@@ -17,4 +17,4 @@ Depends: ${misc:Depends},
   notify-osd,
   python-gi,
   tomate-gtk
-Description: Tomate plugin. Shows screen notifications.
+Description: Tomate plugin that shows screen notifications.

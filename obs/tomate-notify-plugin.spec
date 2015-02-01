@@ -22,7 +22,7 @@ Name: %{real_name}-notify-plugin
 Version: 0.1.0
 Release: 0
 License: GPL-3.0+
-Summary: Tomate Pomodoro Timer (GTK+ Interface)
+Summary: Tomate notify plugin
 Source: %{name}-upstream.tar.gz
 Url: https://github.com/eliostvs/tomate-notify-plugin
 
@@ -44,7 +44,7 @@ Requires: notify-python
 %endif
 
 %description
-Tomate Pomodoro Timer (GTK+ Interface).
+Tomate plugin that shows screen notifications.
 
 %prep
 %setup -q -n %{name}-upstream

@@ -1,7 +1,7 @@
 Tomate Notify Plugin
 ====================
 
-Tomate plugin. Shows screen notifications.
+Tomate plugin that shows screen notifications.
 
 
 Installation
