@@ -21,18 +21,18 @@ class NotifyPlugin(TomatePlugin):
 
     messages = {
         'pomodoro': {
-            'name': _('Pomodoro'),
-            'start': _("It's time to work!"),
+            'title': _('Pomodoro'),
+            'content': _("It's time to work!"),
         },
 
         'shortbreak': {
-            'name': _('Short Break'),
-            'start': _("Go take a coffee!"),
+            'title': _('Short Break'),
+            'content': _("Go take a coffee!"),
         },
 
         'longbreak': {
-            'name': _('Long Break'),
-            'start': _("Got take a walk!"),
+            'title': _('Long Break'),
+            'content': _("Got take a walk!"),
         },
     }
 
@@ -46,17 +46,18 @@ class NotifyPlugin(TomatePlugin):
     def on_deactivate(self):
         Notify.uninit()
 
-    def on_session_started(self, sender=None, **kwargs):
-        task = kwargs.get('task', Task.pomodoro)
-
-        title = self.messages[task.name]['name']
-        message = self.messages[task.name]['start']
-
-        self.show_notification(title, message)
+    def on_session_started(self, *args, **kwargs):
+        self.show_notification(*self.get_message(*args, **kwargs))
 
     @suppress_errors
-    def on_session_ended(self, sender=None, **kwargs):
+    def on_session_ended(self, *args, **kwargs):
         self.show_notification("The time is up!")
+
+    def get_message(self, *args, **kwargs):
+        task = kwargs.get('task', Task.pomodoro)
+
+        return (self.messages[task.name]['title'],
+                self.messages[task.name]['content'])
 
     @suppress_errors
     def show_notification(self, title, message=''):

@@ -42,8 +42,8 @@ class NotifyPluginTestCase(unittest.TestCase):
     def test_should_show_pomodoro_start_session_message(self, mNotification):
         self.plugin.on_session_started()
 
-        title = self.plugin.messages['pomodoro']['name']
-        message = self.plugin.messages['pomodoro']['start']
+        title = self.plugin.messages['pomodoro']['title']
+        message = self.plugin.messages['pomodoro']['content']
 
         mNotification.assert_called_once_with(title, message, self.plugin.iconpath)
 
