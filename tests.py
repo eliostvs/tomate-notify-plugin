@@ -7,12 +7,12 @@ from mock import patch
 
 class NotifyPluginConstructorTestCase(unittest.TestCase):
 
-    @patch('notify_plugin.ProfileManagerSingleton.get')
-    def setUp(self, mProfileManagerSingleton):
+    @patch('notify_plugin.ProfileManager')
+    def setUp(self, mProfileManager):
         from notify_plugin import NotifyPlugin
 
         self.plugin = NotifyPlugin()
-        self.mProfileManagerSingleton = mProfileManagerSingleton
+        self.mProfileManager = mProfileManager
 
     @patch('gi.repository.Notify.init')
     def test_should_init_dbus(self, mock_init):
@@ -27,14 +27,14 @@ class NotifyPluginConstructorTestCase(unittest.TestCase):
         mock_uninit.assert_called_with()
 
     def test_should_get_icon_path(self):
-        self.mProfileManagerSingleton.return_value.get_icon_path.assert_called_once_with('tomate', 32)
+        self.mProfileManager.return_value.get_icon_path.assert_called_once_with('tomate', 32)
 
 
 @patch('gi.repository.Notify.Notification.new')
 class NotifyPluginTestCase(unittest.TestCase):
 
-    @patch('notify_plugin.ProfileManagerSingleton.get')
-    def setUp(self, mProfileManagerSingleton):
+    @patch('notify_plugin.ProfileManager')
+    def setUp(self, mProfileManager):
         from notify_plugin import NotifyPlugin
 
         self.plugin = NotifyPlugin()

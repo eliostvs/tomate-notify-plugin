@@ -4,9 +4,10 @@ import logging
 from locale import gettext as _
 
 from gi.repository import Notify
+
 from tomate.plugin import TomatePlugin
 from tomate.pomodoro import Task
-from tomate.profile import ProfileManagerSingleton
+from tomate.profile import ProfileManager
 from tomate.utils import suppress_errors
 
 logger = logging.getLogger(__name__)
@@ -37,7 +38,7 @@ class NotifyPlugin(TomatePlugin):
     }
 
     def on_init(self):
-        self.profile = ProfileManagerSingleton.get()
+        self.profile = ProfileManager()
         self.iconpath = self.profile.get_icon_path('tomate', 32)
 
     def on_activate(self):
