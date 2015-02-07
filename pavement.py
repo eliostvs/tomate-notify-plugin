@@ -1,5 +1,4 @@
 #!/bin/env python
-
 import os
 
 from paver.easy import needs, path, sh
@@ -15,15 +14,16 @@ PLUGIN_PATH = ROOT_PATH / 'data' / 'plugins'
 TOMATE_PATH = ROOT_PATH / 'tomate'
 
 
-@needs(['test'])
 @task
+@needs(['test'])
 def default():
     pass
 
 
 @task
-def install():
-    sh('cat packages.txt | sudo xargs apt-get -y --force-yes install')
+def test(options):
+    os.environ['PYTHONPATH'] = '%s:%s' % (TOMATE_PATH, PLUGIN_PATH)
+    sh('nosetests --cover-erase --with-coverage tests.py')
 
 
 @task
@@ -34,9 +34,14 @@ def clean():
 
 
 @task
-def test(options):
-    os.environ['PYTHONPATH'] = '%s:%s' % (TOMATE_PATH, PLUGIN_PATH)
-    sh('nosetests --cover-erase --with-coverage tests.py')
+@needs(['docker_rmi', 'docker_build', 'docker_run'])
+def docker_test():
+    pass
+
+
+@task
+def docker_rmi():
+    sh('docker rmi eliostvs/tomate-notify-plugin', ignore_error=True)
 
 
 @task
