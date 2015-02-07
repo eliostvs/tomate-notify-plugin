@@ -2,17 +2,16 @@ from __future__ import unicode_literals
 
 import unittest
 
-from mock import patch
+from mock import patch, Mock
 
 
 class NotifyPluginConstructorTestCase(unittest.TestCase):
 
-    @patch('notify_plugin.ProfileManager')
-    def setUp(self, mProfileManager):
+    def setUp(self):
         from notify_plugin import NotifyPlugin
 
         self.plugin = NotifyPlugin()
-        self.mProfileManager = mProfileManager
+        self.plugin.app = Mock()
 
     @patch('gi.repository.Notify.init')
     def test_should_init_dbus(self, mock_init):
@@ -27,17 +26,20 @@ class NotifyPluginConstructorTestCase(unittest.TestCase):
         mock_uninit.assert_called_with()
 
     def test_should_get_icon_path(self):
-        self.mProfileManager.return_value.get_icon_path.assert_called_once_with('tomate', 32)
+        self.plugin.app.profile.get_icon_path.return_value = '/path/to/mock/22/tomate.png'
+
+        self.assertEqual('/path/to/mock/22/tomate.png', self.plugin.icon)
+        self.plugin.app.profile.get_icon_path.assert_called_once_with('tomate', 32)
 
 
 @patch('gi.repository.Notify.Notification.new')
 class NotifyPluginTestCase(unittest.TestCase):
 
-    @patch('notify_plugin.ProfileManager')
-    def setUp(self, mProfileManager):
+    def setUp(self):
         from notify_plugin import NotifyPlugin
 
         self.plugin = NotifyPlugin()
+        self.plugin.app = Mock()
 
     def test_should_show_pomodoro_start_session_message(self, mNotification):
         self.plugin.on_session_started()
@@ -45,10 +47,10 @@ class NotifyPluginTestCase(unittest.TestCase):
         title = self.plugin.messages['pomodoro']['title']
         message = self.plugin.messages['pomodoro']['content']
 
-        mNotification.assert_called_once_with(title, message, self.plugin.iconpath)
+        mNotification.assert_called_once_with(title, message, self.plugin.icon)
 
     def test_should_show_end_session_message(self, mNotification):
         from tomate.pomodoro import Task
         self.plugin.on_session_ended(task=Task.shortbreak)
 
-        mNotification.assert_called_once_with("The time is up!", '', self.plugin.iconpath)
+        mNotification.assert_called_once_with("The time is up!", '', self.plugin.icon)
