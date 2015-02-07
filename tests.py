@@ -2,16 +2,17 @@ from __future__ import unicode_literals
 
 import unittest
 
-from mock import patch, Mock
+from mock import patch
 
 
 class NotifyPluginConstructorTestCase(unittest.TestCase):
 
-    def setUp(self):
+    @patch('tomate.profile.ProfileManager')
+    def setUp(self, mock_profile):
         from notify_plugin import NotifyPlugin
 
         self.plugin = NotifyPlugin()
-        self.plugin.app = Mock()
+        self.mock_profile = mock_profile
 
     @patch('gi.repository.Notify.init')
     def test_should_init_dbus(self, mock_init):
@@ -26,20 +27,20 @@ class NotifyPluginConstructorTestCase(unittest.TestCase):
         mock_uninit.assert_called_with()
 
     def test_should_get_icon_path(self):
-        self.plugin.app.profile.get_icon_path.return_value = '/path/to/mock/22/tomate.png'
+        self.mock_profile.return_value.get_icon_path.return_value = '/path/to/mock/22/tomate.png'
 
         self.assertEqual('/path/to/mock/22/tomate.png', self.plugin.icon)
-        self.plugin.app.profile.get_icon_path.assert_called_once_with('tomate', 32)
+        self.mock_profile.return_value.get_icon_path.assert_called_once_with('tomate', 32)
 
 
 @patch('gi.repository.Notify.Notification.new')
 class NotifyPluginTestCase(unittest.TestCase):
 
-    def setUp(self):
+    @patch('tomate.profile.ProfileManager')
+    def setUp(self, *args):
         from notify_plugin import NotifyPlugin
 
         self.plugin = NotifyPlugin()
-        self.plugin.app = Mock()
 
     def test_should_show_pomodoro_start_session_message(self, mNotification):
         self.plugin.on_session_started()

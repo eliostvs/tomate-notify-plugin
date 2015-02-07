@@ -7,9 +7,12 @@ from gi.repository import Notify
 
 from tomate.plugin import TomatePlugin
 from tomate.pomodoro import Task
+from tomate.profile import ProfileManager
 from tomate.utils import suppress_errors
 
 logger = logging.getLogger(__name__)
+
+profile = ProfileManager()
 
 
 class NotifyPlugin(TomatePlugin):
@@ -64,4 +67,4 @@ class NotifyPlugin(TomatePlugin):
 
     @property
     def icon(self):
-        return self.app.profile.get_icon_path('tomate', 32)
+        return profile.get_icon_path('tomate', 32)
