@@ -12,7 +12,7 @@ Installation
 ```
 RELEASE=`sed -n 's/VERSION_ID="\(.*\)"/\1/p' /etc/os-release`
 sudo wget -O- http://download.opensuse.org/repositories/home:/eliostvs:/tomate/xUbuntu_$RELEASE/Release.key | sudo apt-key add -
-sudo bash -c "echo 'deb http://download.opensuse.org/repositories/home:/eliostvs:/tomate/xUbuntu_$RELEASE/ ./' > /etc/apt/sources.list.d/eliostvs.list"
+sudo bash -c "echo 'deb http://download.opensuse.org/repositories/home:/eliostvs:/tomate/xUbuntu_$RELEASE/ ./' > /etc/apt/sources.list.d/tomate.list"
 sudo apt-get update && sudo apt-get install tomate-notify-plugin
 ```
 
@@ -20,7 +20,7 @@ sudo apt-get update && sudo apt-get install tomate-notify-plugin
 
 ```
 RELEASE=`cat /etc/SuSE-release | sed -n "s/VERSION = \(.*\)$/\1/p"`
-sudo zypper ar -f http://download.opensuse.org/repositories/home:/eliostvs:/tomate/openSUSE_$RELEASE/home:eliostvs.repo
+sudo zypper ar -f http://download.opensuse.org/repositories/home:/eliostvs:/tomate/openSUSE_$RELEASE/home:eliostvs:tomate.repo
 sudo zypper install tomate-notify-plugin
 ```
 
@@ -28,7 +28,7 @@ sudo zypper install tomate-notify-plugin
 
 ```
 RELEASE=`cat /etc/fedora-release | grep -o '[0-9][0-9]*'`
-sudo yum-config-manager --add-repo http://download.opensuse.org/repositories/home:/eliostvs:/tomate/Fedora_$RELEASE/home:eliostvs.repo
+sudo yum-config-manager --add-repo http://download.opensuse.org/repositories/home:/eliostvs:/tomate/Fedora_$RELEASE/home:eliostvs:tomate.repo
 sudo yum install tomate-notify-plugin
 ```
 
