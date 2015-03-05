@@ -5,9 +5,9 @@ from locale import gettext as _
 
 from gi.repository import Notify
 
+from tomate.enums import Task
 from tomate.graph import graph
 from tomate.plugin import Plugin
-from tomate.enums import Task
 from tomate.utils import suppress_errors
 
 logger = logging.getLogger(__name__)
@@ -37,32 +37,35 @@ class NotifyPlugin(Plugin):
         },
     }
 
+    @suppress_errors
     def __init__(self):
         super(NotifyPlugin, self).__init__()
         self.config = graph.get('tomate.config')
 
+    @suppress_errors
     def activate(self):
         super(NotifyPlugin, self).activate()
         Notify.init('Tomate')
 
+    @suppress_errors
     def deactivate(self):
         super(NotifyPlugin, self).deactivate()
         Notify.uninit()
 
+    @suppress_errors
     def on_session_started(self, *args, **kwargs):
-        self.show_notification(*self.get_message(*args, **kwargs))
+        self.show_notification(*self.get_message(**kwargs))
 
     @suppress_errors
     def on_session_ended(self, *args, **kwargs):
         self.show_notification("The time is up!")
 
-    def get_message(self, *args, **kwargs):
+    def get_message(self, **kwargs):
         task = kwargs.get('task', Task.pomodoro)
 
         return (self.messages[task.name]['title'],
                 self.messages[task.name]['content'])
 
-    @suppress_errors
     def show_notification(self, title, message=''):
         notify = Notify.Notification.new(title, message, self.iconpath)
         notify.show()
