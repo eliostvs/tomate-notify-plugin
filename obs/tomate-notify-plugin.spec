@@ -19,7 +19,7 @@
 %define module_name %{real_name}_notify_plugin
 
 Name: %{real_name}-notify-plugin
-Version: 0.1.1
+Version: 0.2.0
 Release: 0
 License: GPL-3.0+
 Summary: Tomate notify plugin

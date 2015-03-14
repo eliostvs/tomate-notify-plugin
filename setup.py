@@ -45,6 +45,6 @@ setup(
     name='tomate-notify-plugin',
     data_files=find_data_files(DATA_FILES, 'tomate'),
     url='https://github.com/eliostvs/tomate-notify-plugin',
-    version='0.1.1',
+    version='0.2.0',
     zip_safe=False,
 )
