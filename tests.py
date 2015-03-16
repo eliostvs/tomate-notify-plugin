@@ -3,17 +3,22 @@ from __future__ import unicode_literals
 import unittest
 
 from mock import Mock, patch
+
 from tomate.enums import Task
 from tomate.graph import graph
+from tomate.tests import SubscriptionMixin
 
 
-class TestNotifyPlugin(unittest.TestCase):
+class TestNotifyPlugin(SubscriptionMixin, unittest.TestCase):
 
     def setUp(self):
         graph.register_factory('tomate.config', Mock)
         from notify_plugin import NotifyPlugin
 
         self.plugin = NotifyPlugin()
+
+    def create_instance(self):
+        return self.plugin
 
     @patch('gi.repository.Notify.init')
     def test_init_dbus(self, mock_init):
