@@ -6,19 +6,15 @@ from mock import Mock, patch
 
 from tomate.enums import Task
 from tomate.graph import graph
-from tomate.tests import SubscriptionMixin
 
 
-class TestNotifyPlugin(SubscriptionMixin, unittest.TestCase):
+class TestNotifyPlugin(unittest.TestCase):
 
     def setUp(self):
         graph.register_factory('tomate.config', Mock)
         from notify_plugin import NotifyPlugin
 
         self.plugin = NotifyPlugin()
-
-    def create_instance(self):
-        return self.plugin
 
     @patch('gi.repository.Notify.init')
     def test_init_dbus(self, mock_init):
@@ -38,16 +34,16 @@ class TestNotifyPlugin(SubscriptionMixin, unittest.TestCase):
         self.assertEqual('/path/to/mock/32/tomate.png', self.plugin.iconpath)
 
     @patch('gi.repository.Notify.Notification.new')
-    def test_should_show_pomodoro_start_session_message(self, mNotification):
+    def test_should_show_pomodoro_start_session_message(self, mock_notification):
         self.plugin.on_session_started()
 
         title = self.plugin.messages['pomodoro']['title']
         message = self.plugin.messages['pomodoro']['content']
 
-        mNotification.assert_called_once_with(title, message, self.plugin.iconpath)
+        mock_notification.assert_called_once_with(title, message, self.plugin.iconpath)
 
     @patch('gi.repository.Notify.Notification.new')
-    def test_should_show_end_session_message(self, mNotification):
+    def test_should_show_end_session_message(self, mock_notification):
         self.plugin.on_session_ended(task=Task.shortbreak)
 
-        mNotification.assert_called_once_with("The time is up!", '', self.plugin.iconpath)
+        mock_notification.assert_called_once_with("The time is up!", '', self.plugin.iconpath)
