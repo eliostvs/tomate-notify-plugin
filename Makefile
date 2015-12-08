@@ -21,7 +21,7 @@ docker-build:
 	docker build -t $(DOCKER_IMAGE_NAME) .
 
 docker-test:
-	docker run --rm -v $PWD:/code $(DOCKER_IMAGE_NAME) test
+	docker run --rm -v $(PROJECT_ROOT):/code $(DOCKER_IMAGE_NAME) test
 
 docker-all: docker-clean docker-build docker-test
 
