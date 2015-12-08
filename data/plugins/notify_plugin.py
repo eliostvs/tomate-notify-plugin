@@ -4,8 +4,9 @@ import logging
 from locale import gettext as _
 
 from gi.repository import Notify
-from tomate.enums import Task, State
-from tomate.events import Events, on
+
+from tomate.constant import Task, State
+from tomate.event import Events, on
 from tomate.graph import graph
 from tomate.plugin import Plugin
 from tomate.utils import suppress_errors
@@ -48,7 +49,7 @@ class NotifyPlugin(Plugin):
         Notify.uninit()
 
     @suppress_errors
-    @on(Events.Session, [State.running])
+    @on(Events.Session, [State.started])
     def on_session_started(self, *args, **kwargs):
         self.show_notification(*self.get_message(**kwargs))
 
