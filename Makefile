@@ -14,19 +14,16 @@ clean:
 test: clean
 	$(PYTHONPATH) nosetests --verbosity=$(VERBOSITY)
 
-docker-test:
-	docker run --rm -v $PWD:/code $(DOCKER_IMAGE_NAME) test
-
 docker-clean:
 	docker rmi $(DOCKER_IMAGE_NAME) 2> /dev/null || echo $(DOCKER_IMAGE_NAME) not found!
 
 docker-build:
 	docker build -t $(DOCKER_IMAGE_NAME) .
+	
+docker-test:
+	docker run --rm -v $PWD:/code $(DOCKER_IMAGE_NAME) test
 
 docker-all: docker-clean docker-build docker-test
-
-docker-run:
-	docker run --rm -it -v $(PROJECT_ROOT):/code $(DOCKER_IMAGE_NAME)
 
 docker-enter:
 	docker run --rm -v $(PROJECT_ROOT):/code -it --entrypoint="bash" $(DOCKER_IMAGE_NAME)
