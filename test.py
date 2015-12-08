@@ -3,13 +3,11 @@ from __future__ import unicode_literals
 import unittest
 
 from mock import Mock, patch
-
 from tomate.enums import Task
 from tomate.graph import graph
-from tomate.tests import SubscriptionMixin
 
 
-class TestNotifyPlugin(SubscriptionMixin, unittest.TestCase):
+class TestNotifyPlugin(unittest.TestCase):
 
     def setUp(self):
         graph.register_factory('tomate.config', Mock)

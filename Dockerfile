@@ -1,16 +1,13 @@
-FROM ubuntu:14.04
+FROM eliostvs/tomate-gtk
 
-RUN apt-get install -y -qq wget
+ENV PROJECT /code/
 
-RUN wget -O- http://download.opensuse.org/repositories/home:/eliostvs:/tomate/xUbuntu_14.04/Release.key | apt-key add -
-RUN echo 'deb http://download.opensuse.org/repositories/home:/eliostvs:/tomate/xUbuntu_14.04/ ./' > /etc/apt/sources.list.d/tomate.list
+COPY ./ $PROJECT
 
-COPY ./ /code/
+RUN apt-get update -qq && apt-get -yqq install gir1.2-notify-0.7 notify-osd
 
-RUN apt-get update -qq && cat /code/packages.txt | xargs apt-get -yqq install
+WORKDIR $PROJECT
 
-WORKDIR /code/
-
-ENTRYPOINT ["paver"]
+ENTRYPOINT ["make"]
 
 CMD ["test"]
