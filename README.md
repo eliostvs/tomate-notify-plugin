@@ -3,7 +3,11 @@ Tomate Notify Plugin
 
 Tomate is a timer for the Pomodoro Techinique. 
 This plugin shows screen notifications in the beginning and ending of a session.
-You should install the [UI](https://github.com/eliostvs/tomate-gtk) first.
+
+Installation
+------------
+
+Go to [this page](https://github.com/eliostvs/tomate-gtk) for instructions.
 
 License
 -------
