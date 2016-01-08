@@ -6,7 +6,7 @@ DATA_PATH = $(PROJECT_ROOT)/data
 PLUGIN_PATH = $(DATA_PATH)/plugins
 PYTHONPATH = PYTHONPATH=$(TOMATE_PATH):$(PLUGIN_PATH)
 DOCKER_IMAGE_NAME= $(AUTHOR)/$(PROJECT)
-VERBOSITY=1
+VERBOSITY = 1
 
 clean:
 	find . \( -iname "*.pyc" -o -iname "__pycache__" \) -print0 | xargs -0 rm -rf
@@ -21,7 +21,7 @@ docker-build:
 	docker build -t $(DOCKER_IMAGE_NAME) .
 
 docker-test:
-	docker run --rm -v $(PROJECT_ROOT):/code $(DOCKER_IMAGE_NAME) test
+	docker run --rm -v $(PROJECT_ROOT):/code $(DOCKER_IMAGE_NAME)
 
 docker-all: docker-clean docker-build docker-test
 
