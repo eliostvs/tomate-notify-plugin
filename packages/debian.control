@@ -2,7 +2,6 @@ Source: tomate-notify-plugin
 Section: python
 Priority: optional
 Build-Depends: debhelper (>= 9),
-Build-Depends: debhelper (>= 9),
  dh-python,
  python-all,
  python-setuptools,
