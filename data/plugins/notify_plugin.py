@@ -5,16 +5,16 @@ from locale import gettext as _
 
 from gi.repository import Notify
 
+import tomate.plugin
 from tomate.constant import Task, State
 from tomate.event import Events, on
 from tomate.graph import graph
-from tomate.plugin import Plugin
 from tomate.utils import suppress_errors
 
 logger = logging.getLogger(__name__)
 
 
-class NotifyPlugin(Plugin):
+class NotifyPlugin(tomate.plugin.Plugin):
 
     messages = {
         'pomodoro': {
