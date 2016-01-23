@@ -5,21 +5,16 @@ from locale import gettext as _
 
 from gi.repository import Notify
 
-from tomate.enums import Task, State
+import tomate.plugin
+from tomate.constant import Task, State
+from tomate.event import Events, on
 from tomate.graph import graph
-from tomate.plugin import Plugin
-from tomate.events import Events, on
 from tomate.utils import suppress_errors
 
 logger = logging.getLogger(__name__)
 
 
-class NotifyPlugin(Plugin):
-
-    subscriptions = (
-        ('session_started', 'on_session_started'),
-        ('session_ended', 'on_session_ended'),
-    )
+class NotifyPlugin(tomate.plugin.Plugin):
 
     messages = {
         'pomodoro': {
@@ -54,12 +49,12 @@ class NotifyPlugin(Plugin):
         Notify.uninit()
 
     @suppress_errors
-    @on(Events.Session, [State.running])
+    @on(Events.Session, [State.started])
     def on_session_started(self, *args, **kwargs):
         self.show_notification(*self.get_message(**kwargs))
 
     @suppress_errors
-    @on(Events.Session, [State.finished])
+    @on(Events.Session, [State.stopped])
     def on_session_ended(self, *args, **kwargs):
         self.show_notification("The time is up!")
 

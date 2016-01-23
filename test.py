@@ -4,7 +4,7 @@ import unittest
 
 from mock import Mock, patch
 
-from tomate.enums import Task
+from tomate.constant import Task
 from tomate.graph import graph
 
 

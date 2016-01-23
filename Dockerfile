@@ -1,14 +1,12 @@
-FROM eliostvs/tomate-gtk
+FROM eliostvs/tomate
 
-COPY ./ /code/
+ENV PROJECT /code/
 
-RUN apt-get update -qq && \
-    gir1.2-notify-0.7 \
-    notify-osd
+COPY ./ $PROJECT
 
-RUN apt-get clean
+RUN apt-get update -qq && apt-get -yqq install gir1.2-notify-0.7 gir1.2-gtk-3.0 notify-osd
 
-WORKDIR /code/
+WORKDIR $PROJECT
 
 ENTRYPOINT ["make"]
 

@@ -20,5 +20,3 @@ build
 dist
 docs/*
 sdist
-*.sublime-*
-tomate/

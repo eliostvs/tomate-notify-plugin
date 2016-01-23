@@ -12,10 +12,7 @@ clean:
 	find . \( -iname "*.pyc" -o -iname "__pycache__" \) -print0 | xargs -0 rm -rf
 
 test: clean
-	$(PYTHONPATH) nosetests --verbosity=$(VERBOSITY)
-
-docker-test:
-	docker run --rm -v $PWD:/code $(DOCKER_IMAGE_NAME) test
+	$(PYTHONPATH) nosetests --with-coverage --cover-erase --cover-package=$(PLUGIN_PATH) --verbosity=$(VERBOSITY)
 
 docker-clean:
 	docker rmi $(DOCKER_IMAGE_NAME) 2> /dev/null || echo $(DOCKER_IMAGE_NAME) not found!
@@ -23,10 +20,10 @@ docker-clean:
 docker-build:
 	docker build -t $(DOCKER_IMAGE_NAME) .
 
-docker-all: docker-clean docker-build docker-test
+docker-test:
+	docker run --rm -v $(PROJECT_ROOT):/code $(DOCKER_IMAGE_NAME)
 
-docker-run:
-	docker run --rm -it -v $(PROJECT_ROOT):/code $(DOCKER_IMAGE_NAME)
+docker-all: docker-clean docker-build docker-test
 
 docker-enter:
 	docker run --rm -v $(PROJECT_ROOT):/code -it --entrypoint="bash" $(DOCKER_IMAGE_NAME)
