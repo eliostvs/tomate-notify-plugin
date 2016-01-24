@@ -4,36 +4,18 @@ Priority: optional
 Build-Depends: debhelper (>= 9),
  dh-python,
  python-all,
- python-setuptools,
- python3-all,
- python3-setuptools
+ python-setuptools
 Maintainer: Elio Esteves Duarte <elio.esteves.duarte@gmail.com>
 Standards-Version: 3.9.5
 X-Python-Version: >= 2.7
-X-Python3-Version: >= 3.2
 Homepage: https://github.com/eliostvs/tomate-notify-plugin
 
 Package: tomate-notify-plugin
 Architecture: all
 Depends: ${misc:Depends},
- python-all (>= 2.7),
+ ${python:Depends},
  gir1.2-notify-0.7,
  notify-osd,
  python-gi,
  tomate-gtk (>= 0.4.0)
 Description: Tomate plugin that shows screen notifications
- .
- This package installs the library for Python 2.
-
-
-Package: tomate-notify-plugin3
-Architecture: all
-Depends: ${misc:Depends},
- python-all (>= 3.2),
- gir1.2-notify-0.7,
- notify-osd,
- python-gi,
- tomate-gtk (>= 0.4.0)
-Description: Tomate plugin that shows screen notifications
- .
- This package installs the library for Python 3.
