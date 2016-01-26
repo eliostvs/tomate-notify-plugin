@@ -41,6 +41,7 @@ Requires: typelib-1_0-Notify-0_7
 %if 0%{?fedora}
 BuildArch: noarch
 Requires: notify-python
+Requires: notification-daemon
 %endif
 
 %description
