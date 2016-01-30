@@ -1,7 +1,10 @@
 from __future__ import unicode_literals
 
 import logging
+import gi
 from locale import gettext as _
+
+gi.require_version('Notify', '0.7')
 
 from gi.repository import Notify
 
