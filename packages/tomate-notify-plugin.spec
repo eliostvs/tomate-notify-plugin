@@ -19,7 +19,7 @@
 %define module_name %{real_name}_notify_plugin
 
 Name: %{real_name}-notify-plugin
-Version: 0.4.2
+Version: 0.5.0
 Release: 0
 License: GPL-3.0+
 Summary: Tomate notify plugin
@@ -31,7 +31,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-build
 BuildRequires: python-devel
 BuildRequires: python-setuptools
 
-Requires: tomate-gtk >= 0.4.2
+Requires: tomate-gtk >= 0.5.0
 
 %if 0%{?suse_version}
 BuildArchitectures: noarch
@@ -41,6 +41,7 @@ Requires: typelib-1_0-Notify-0_7
 %if 0%{?fedora}
 BuildArch: noarch
 Requires: notify-python
+Requires: notification-daemon
 %endif
 
 %description
