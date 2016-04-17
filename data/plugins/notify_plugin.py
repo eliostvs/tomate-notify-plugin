@@ -32,7 +32,7 @@ class NotifyPlugin(tomate.plugin.Plugin):
 
         'longbreak': {
             'title': _('Long Break'),
-            'content': _("Got take a walk!"),
+            'content': _("Go take a walk!"),
         },
     }
 
