@@ -18,7 +18,7 @@ clean:
 	rm -rf *.egg-info/ .coverage build/
 
 test: clean
-	$(PYTHONPATH) py.test -v --cov-report term-missing --cov=$(PLUGIN_PATH) --flake8
+	$(PYTHONPATH) py.test test.py -v --cov-report term-missing --cov=$(PLUGIN_PATH) --flake8
 
 docker-clean:
 	docker rmi $(DOCKER_IMAGE_NAME) 2> /dev/null || echo $(DOCKER_IMAGE_NAME) not found!
