@@ -3,13 +3,25 @@ from __future__ import unicode_literals
 import pytest
 from mock import Mock, patch
 
-from tomate.constant import Task
+from tomate.constant import Task, State
 from tomate.graph import graph
+from tomate.event import Events
+
+
+def method_called(result):
+    return result[0][0]
+
+
+def setup_function(function):
+    graph.providers.clear()
+
+    graph.register_factory('tomate.config', Mock)
+
+    Events.Session.receivers.clear()
 
 
 @pytest.fixture()
 def plugin():
-    graph.register_factory('tomate.config', Mock)
 
     from notify_plugin import NotifyPlugin
 
@@ -47,7 +59,25 @@ def test_should_show_pomodoro_start_session_message(notification, plugin):
 
 
 @patch('gi.repository.Notify.Notification.new')
-def test_should_show_end_session_message(notification, plugin):
-    plugin.on_session_ended(task=Task.shortbreak)
+def test_should_show_session_finished_message(notification, plugin):
+    plugin.on_session_finished(task=Task.shortbreak)
 
     notification.assert_called_once_with("The time is up!", '', plugin.iconpath)
+
+
+def test_should_call_on_session_finished_when_session_finished(plugin):
+    plugin.activate()
+
+    result = Events.Session.send(State.finished)
+
+    assert len(result) == 1
+    assert plugin.on_session_finished == method_called(result)
+
+
+def test_should_call_on_session_started_when_session_started(plugin):
+    plugin.activate()
+
+    result = Events.Session.send(State.started)
+
+    assert len(result) == 1
+    assert plugin.on_session_started == method_called(result)
