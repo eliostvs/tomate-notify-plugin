@@ -1,49 +1,83 @@
 from __future__ import unicode_literals
 
-import unittest
-
+import pytest
 from mock import Mock, patch
 
-from tomate.constant import Task
+from tomate.constant import Task, State
 from tomate.graph import graph
+from tomate.event import Events
 
 
-class TestNotifyPlugin(unittest.TestCase):
+def method_called(result):
+    return result[0][0]
 
-    def setUp(self):
-        graph.register_factory('tomate.config', Mock)
-        from notify_plugin import NotifyPlugin
 
-        self.plugin = NotifyPlugin()
+def setup_function(function):
+    graph.providers.clear()
 
-    @patch('gi.repository.Notify.init')
-    def test_init_dbus(self, mock_init):
-        self.plugin.activate()
+    graph.register_factory('tomate.config', Mock)
 
-        mock_init.assert_called_with('Tomate')
+    Events.Session.receivers.clear()
 
-    @patch('gi.repository.Notify.uninit')
-    def test_uninit_dbus(self, mock_uninit):
-        self.plugin.deactivate()
 
-        mock_uninit.assert_called_with()
+@pytest.fixture()
+def plugin():
 
-    def test_get_icon_path(self):
-        self.plugin.config.get_icon_path.return_value = '/path/to/mock/32/tomate.png'
+    from notify_plugin import NotifyPlugin
 
-        self.assertEqual('/path/to/mock/32/tomate.png', self.plugin.iconpath)
+    return NotifyPlugin()
 
-    @patch('gi.repository.Notify.Notification.new')
-    def test_should_show_pomodoro_start_session_message(self, mock_notification):
-        self.plugin.on_session_started()
 
-        title = self.plugin.messages['pomodoro']['title']
-        message = self.plugin.messages['pomodoro']['content']
+@patch('gi.repository.Notify.init')
+def test_init_dbus(init, plugin):
+    plugin.activate()
 
-        mock_notification.assert_called_once_with(title, message, self.plugin.iconpath)
+    init.assert_called_with('Tomate')
 
-    @patch('gi.repository.Notify.Notification.new')
-    def test_should_show_end_session_message(self, mock_notification):
-        self.plugin.on_session_ended(task=Task.shortbreak)
 
-        mock_notification.assert_called_once_with("The time is up!", '', self.plugin.iconpath)
+@patch('gi.repository.Notify.uninit')
+def test_uninit_dbus(uninit, plugin):
+    plugin.deactivate()
+
+    uninit.assert_called_with()
+
+
+def test_get_icon_path(plugin):
+    plugin.config.get_icon_path.return_value = '/path/to/mock/32/tomate.png'
+
+    assert plugin.iconpath == '/path/to/mock/32/tomate.png'
+
+
+@patch('gi.repository.Notify.Notification.new')
+def test_should_show_pomodoro_start_session_message(notification, plugin):
+    plugin.on_session_started()
+
+    title = plugin.messages['pomodoro']['title']
+    message = plugin.messages['pomodoro']['content']
+
+    notification.assert_called_once_with(title, message, plugin.iconpath)
+
+
+@patch('gi.repository.Notify.Notification.new')
+def test_should_show_session_finished_message(notification, plugin):
+    plugin.on_session_finished(task=Task.shortbreak)
+
+    notification.assert_called_once_with("The time is up!", '', plugin.iconpath)
+
+
+def test_should_call_on_session_finished_when_session_finished(plugin):
+    plugin.activate()
+
+    result = Events.Session.send(State.finished)
+
+    assert len(result) == 1
+    assert plugin.on_session_finished == method_called(result)
+
+
+def test_should_call_on_session_started_when_session_started(plugin):
+    plugin.activate()
+
+    result = Events.Session.send(State.started)
+
+    assert len(result) == 1
+    assert plugin.on_session_started == method_called(result)

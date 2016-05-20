@@ -32,7 +32,7 @@ class NotifyPlugin(tomate.plugin.Plugin):
 
         'longbreak': {
             'title': _('Long Break'),
-            'content': _("Got take a walk!"),
+            'content': _("Go take a walk!"),
         },
     }
 
@@ -57,8 +57,8 @@ class NotifyPlugin(tomate.plugin.Plugin):
         self.show_notification(*self.get_message(**kwargs))
 
     @suppress_errors
-    @on(Events.Session, [State.stopped])
-    def on_session_ended(self, *args, **kwargs):
+    @on(Events.Session, [State.finished])
+    def on_session_finished(self, *args, **kwargs):
         self.show_notification("The time is up!")
 
     def get_message(self, **kwargs):

@@ -1,8 +1,8 @@
 Tomate Notify Plugin
 ====================
 
-Tomate is a timer for the Pomodoro Techinique. 
-This plugin shows screen notifications in the beginning and ending of a session.
+Tomate is a timer for the Pomodoro Techinique.
+This plugin shows OSD notifications when the timer starts and stops.
 
 Installation
 ------------
@@ -14,15 +14,23 @@ Bugs and Suggetions
 
 Bugs and suggestions should be reported [here](https://github.com/eliostvs/tomate-notify-plugin/issues).
 
-Changelog
----------
+Change Logs
+----------
 
-### v0.5.0
+### 0.7.0
+
+- Not show notification when timer is stopped.
+
+### 0.6.0
+
+- Using py.test
+
+### 0.5.0
 
 - Remove linux package metadata
 - Fix Gtk warnings
 
-### v0.4.0
+### 0.4.0
 
 - Using the new event system
 
