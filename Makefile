@@ -5,7 +5,7 @@ TOMATE_PATH = $(PACKAGE_ROOT)/tomate
 DATA_PATH = $(PACKAGE_ROOT)/data
 PLUGIN_PATH = $(DATA_PATH)/plugins
 PYTHONPATH = PYTHONPATH=$(TOMATE_PATH):$(PLUGIN_PATH)
-DOCKER_IMAGE_NAME= $(AUTHOR)/$(PACKAGE)
+DOCKER_IMAGE_NAME = $(AUTHOR)/$(PACKAGE)
 PROJECT = home:eliostvs:tomate
 OBS_API_URL = https://api.opensuse.org:443/trigger/runservice?project=$(PROJECT)&package=$(PACKAGE)
 
@@ -18,7 +18,10 @@ clean:
 	rm -rf *.egg-info/ .coverage build/
 
 test: clean
-	$(PYTHONPATH) py.test test.py -v --cov-report term-missing --cov=$(PLUGIN_PATH) --flake8
+	$(PYTHONPATH) py.test tests.py --cov=$(PLUGIN_PATH)
+
+lint:
+	flake8
 
 docker-clean:
 	docker rmi $(DOCKER_IMAGE_NAME) 2> /dev/null || echo $(DOCKER_IMAGE_NAME) not found!
@@ -33,6 +36,9 @@ docker-all: docker-clean docker-build docker-test
 
 docker-enter:
 	docker run --rm -v $(PACKAGE_ROOT):/code -it --entrypoint="bash" $(DOCKER_IMAGE_NAME)
+
+docker-lint:
+	docker run --rm -v $(PACKAGE_ROOT):/code $(DOCKER_IMAGE_NAME) lint
 
 trigger-build:
 	curl -X POST -H "Authorization: Token $(TOKEN)" $(OBS_API_URL)
