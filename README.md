@@ -1,7 +1,7 @@
 Tomate Notify Plugin
 ====================
 
-Tomate is a timer for the Pomodoro Techinique.
+Tomate is a timer for the Pomodoro Technique.
 This plugin shows OSD notifications when the timer starts and stops.
 
 Installation
