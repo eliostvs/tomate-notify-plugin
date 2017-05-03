@@ -17,7 +17,7 @@ def setup_function(function):
 
     graph.register_factory('tomate.config', Mock)
 
-    Events['Session'].receivers.clear()
+    Events.Session.receivers.clear()
 
 
 @pytest.fixture()
@@ -68,7 +68,7 @@ def test_should_show_session_finished_message(notification, plugin):
 def test_should_call_on_session_finished_when_session_finished(plugin):
     plugin.activate()
 
-    result = Events['Session'].send(State.finished)
+    result = Events.Session.send(State.finished)
 
     assert len(result) == 1
     assert plugin.on_session_finished == method_called(result)
@@ -77,7 +77,7 @@ def test_should_call_on_session_finished_when_session_finished(plugin):
 def test_should_call_on_session_started_when_session_started(plugin):
     plugin.activate()
 
-    result = Events['Session'].send(State.started)
+    result = Events.Session.send(State.started)
 
     assert len(result) == 1
     assert plugin.on_session_started == method_called(result)

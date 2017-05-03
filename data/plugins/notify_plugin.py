@@ -52,12 +52,12 @@ class NotifyPlugin(tomate.plugin.Plugin):
         Notify.uninit()
 
     @suppress_errors
-    @on(Events['Session'], [State.started])
+    @on(Events.Session, [State.started])
     def on_session_started(self, *args, **kwargs):
         self.show_notification(*self.get_message(**kwargs))
 
     @suppress_errors
-    @on(Events['Session'], [State.finished])
+    @on(Events.Session, [State.finished])
     def on_session_finished(self, *args, **kwargs):
         self.show_notification("The time is up!")
 
