@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
 
 import logging
-import gi
 from locale import gettext as _
+
+import gi
 
 gi.require_version('Notify', '0.7')
 
@@ -18,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 
 class NotifyPlugin(tomate.plugin.Plugin):
-
     messages = {
         'pomodoro': {
             'title': _('Pomodoro'),
