@@ -1,11 +1,10 @@
-from __future__ import unicode_literals
+from unittest.mock import Mock, patch
 
 import pytest
-from mock import Mock, patch
-
-from tomate.constant import Task, State
-from tomate.graph import graph
+from tomate.config import Config
+from tomate.constant import Sessions, State
 from tomate.event import Events
+from tomate.graph import graph
 
 
 def method_called(result):
