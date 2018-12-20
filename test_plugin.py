@@ -14,14 +14,13 @@ def method_called(result):
 def setup_function(function):
     graph.providers.clear()
 
-    graph.register_factory('tomate.config', Mock)
+    graph.register_instance('tomate.config', Mock(spec=Config))
 
     Events.Session.receivers.clear()
 
 
 @pytest.fixture()
 def plugin():
-
     from notify_plugin import NotifyPlugin
 
     return NotifyPlugin()
