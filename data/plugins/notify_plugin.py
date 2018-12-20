@@ -8,7 +8,7 @@ gi.require_version('Notify', '0.7')
 from gi.repository import Notify
 
 import tomate.plugin
-from tomate.constant import Task, State
+from tomate.constant import Sessions, State
 from tomate.event import Events, on
 from tomate.graph import graph
 from tomate.utils import suppress_errors
@@ -60,7 +60,7 @@ class NotifyPlugin(tomate.plugin.Plugin):
         self.show_notification("The time is up!")
 
     def get_message(self, **kwargs):
-        task = kwargs.get('task', Task.pomodoro)
+        task = kwargs.get('task', Sessions.pomodoro)
 
         return (self.messages[task.name]['title'],
                 self.messages[task.name]['content'])

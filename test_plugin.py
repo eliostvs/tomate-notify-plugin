@@ -58,7 +58,7 @@ def test_should_show_pomodoro_start_session_message(notification, plugin):
 
 @patch('gi.repository.Notify.Notification.new')
 def test_should_show_session_finished_message(notification, plugin):
-    plugin.on_session_finished(task=Task.shortbreak)
+    plugin.on_session_finished(task=Sessions.shortbreak)
 
     notification.assert_called_once_with("The time is up!", '', plugin.icon_path)
 
