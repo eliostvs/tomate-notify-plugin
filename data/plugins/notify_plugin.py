@@ -68,11 +68,11 @@ class NotifyPlugin(tomate.plugin.Plugin):
                 self.messages[task.name]['content'])
 
     def show_notification(self, title, message=''):
-        notify = Notify.Notification.new(title, message, self.iconpath)
+        notify = Notify.Notification.new(title, message, self.icon_path)
         notify.show()
 
         logger.debug('Message %s sent!', message)
 
     @property
-    def iconpath(self):
+    def icon_path(self):
         return self.config.get_icon_path('tomate', 32)
