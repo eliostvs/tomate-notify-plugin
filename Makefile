@@ -36,6 +36,7 @@ docker-enter:
 	docker run --rm -v $(PACKAGE_ROOT):$(WORK_DIR) --workdir $(WORK_DIR) -it --entrypoint="bash" $(DOCKER_IMAGE_NAME)
 
 release-%:
+	grep -q '\[Unreleased\]' || echo 'Create the [Unreleased] section in the changelog first!'
 	bumpversion --verbose --commit $*
 	git flow release start $(CURRENT_VERSION)
 	git flow release finish -p $(CURRENT_VERSION)
