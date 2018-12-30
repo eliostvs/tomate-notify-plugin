@@ -7,8 +7,13 @@ PLUGIN_PATH = $(DATA_PATH)/plugins
 PYTHONPATH = PYTHONPATH=$(TOMATE_PATH):$(PLUGIN_PATH)
 DOCKER_IMAGE_NAME = $(AUTHOR)/tomate
 PROJECT = home:eliostvs:tomate
-OBS_API_URL = https://api.opensuse.org:443/trigger/runservice?project=$(PROJECT)&package=$(PACKAGE)
+OBS_API_URL = https://api.opensuse.org/trigger/runservice
 WORK_DIR = /code
+CURRENT_VERSION = `cat .bumpversion.cfg | grep current_version | awk '{print $$3}'`
+
+submodule:
+	git submodule init;
+	git submodule update;
 
 clean:
 	find . \( -iname "*.pyc" -o -iname "__pycache__" \) -print0 | xargs -0 rm -rf
@@ -33,3 +38,9 @@ docker-enter:
 
 trigger-build:
 	curl -X POST -H "Authorization: Token $(TOKEN)" $(OBS_API_URL)
+
+release-%:
+	@grep -q '\[Unreleased\]' README.md || (echo 'Create the [Unreleased] section in the changelog first!' && exit)
+	bumpversion --verbose --commit $*
+	git flow release start $(CURRENT_VERSION)
+	GIT_MERGE_AUTOEDIT=no git flow release finish -m "Merge branch release/$(CURRENT_VERSION)" -T $(CURRENT_VERSION) $(CURRENT_VERSION)

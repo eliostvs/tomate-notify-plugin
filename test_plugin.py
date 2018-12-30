@@ -1,11 +1,10 @@
-from __future__ import unicode_literals
+from unittest.mock import Mock, patch
 
 import pytest
-from mock import Mock, patch
-
-from tomate.constant import Task, State
-from tomate.graph import graph
+from tomate.config import Config
+from tomate.constant import Sessions, State
 from tomate.event import Events
+from tomate.graph import graph
 
 
 def method_called(result):
@@ -15,14 +14,13 @@ def method_called(result):
 def setup_function(function):
     graph.providers.clear()
 
-    graph.register_factory('tomate.config', Mock)
+    graph.register_instance('tomate.config', Mock(spec=Config))
 
     Events.Session.receivers.clear()
 
 
 @pytest.fixture()
 def plugin():
-
     from notify_plugin import NotifyPlugin
 
     return NotifyPlugin()
@@ -45,7 +43,7 @@ def test_uninit_dbus(uninit, plugin):
 def test_get_icon_path(plugin):
     plugin.config.get_icon_path.return_value = '/path/to/mock/32/tomate.png'
 
-    assert plugin.iconpath == '/path/to/mock/32/tomate.png'
+    assert plugin.icon_path == '/path/to/mock/32/tomate.png'
 
 
 @patch('gi.repository.Notify.Notification.new')
@@ -55,14 +53,14 @@ def test_should_show_pomodoro_start_session_message(notification, plugin):
     title = plugin.messages['pomodoro']['title']
     message = plugin.messages['pomodoro']['content']
 
-    notification.assert_called_once_with(title, message, plugin.iconpath)
+    notification.assert_called_once_with(title, message, plugin.icon_path)
 
 
 @patch('gi.repository.Notify.Notification.new')
 def test_should_show_session_finished_message(notification, plugin):
-    plugin.on_session_finished(task=Task.shortbreak)
+    plugin.on_session_finished(task=Sessions.shortbreak)
 
-    notification.assert_called_once_with("The time is up!", '', plugin.iconpath)
+    notification.assert_called_once_with("The time is up!", '', plugin.icon_path)
 
 
 def test_should_call_on_session_finished_when_session_finished(plugin):
