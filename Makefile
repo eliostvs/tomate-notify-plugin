@@ -9,6 +9,7 @@ DOCKER_IMAGE_NAME = $(AUTHOR)/tomate
 PROJECT = home:eliostvs:tomate
 OBS_API_URL = https://api.opensuse.org/trigger/runservice
 WORK_DIR = /code
+CURRENT_VERSION = `cat .bumpversion.cfg | grep current_version | awk '{print $$3}'`
 
 submodule:
 	git submodule init;
@@ -35,12 +36,11 @@ docker-all: docker-clean docker-pull docker-test
 docker-enter:
 	docker run --rm -v $(PACKAGE_ROOT):$(WORK_DIR) --workdir $(WORK_DIR) -it --entrypoint="bash" $(DOCKER_IMAGE_NAME)
 
-release-%:
-	grep -q '\[Unreleased\]' || echo 'Create the [Unreleased] section in the changelog first!'
-	bumpversion --verbose --commit $*
-	git flow release start $(CURRENT_VERSION)
-	git flow release finish -p $(CURRENT_VERSION)
-	git push --tags
-
 trigger-build:
 	curl -X POST -H "Authorization: Token $(TOKEN)" $(OBS_API_URL)
+
+release-%:
+	@grep -q '\[Unreleased\]' README.md || (echo 'Create the [Unreleased] section in the changelog first!' && exit)
+	bumpversion --verbose --commit $*
+	git flow release start $(CURRENT_VERSION)
+	GIT_MERGE_AUTOEDIT=no git flow release finish -m "Merge branch release/$(CURRENT_VERSION)" -T $(CURRENT_VERSION) $(CURRENT_VERSION)
