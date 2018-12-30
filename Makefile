@@ -7,7 +7,7 @@ PLUGIN_PATH = $(DATA_PATH)/plugins
 PYTHONPATH = PYTHONPATH=$(TOMATE_PATH):$(PLUGIN_PATH)
 DOCKER_IMAGE_NAME = $(AUTHOR)/tomate
 PROJECT = home:eliostvs:tomate
-OBS_API_URL = https://api.opensuse.org:443/trigger/runservice?project=$(PROJECT)&package=$(PACKAGE)
+OBS_API_URL = https://api.opensuse.org/trigger/runservice
 WORK_DIR = /code
 
 submodule:

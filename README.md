@@ -14,8 +14,14 @@ Bugs and Suggestions
 
 Bugs and suggestions should be reported [here](https://github.com/eliostvs/tomate-notify-plugin/issues).
 
-Change Logs
-----------
+Changelog
+---------
+
+### [Unreleased]
+
+#### Changed
+
+- The Task enum was renamed to Sessions
 
 ### 0.8.0
 
