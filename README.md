@@ -17,7 +17,7 @@ Bugs and suggestions should be reported [here](https://github.com/eliostvs/tomat
 Changelog
 ---------
 
-### [Unreleased]
+### 0.9.0
 
 #### Changed
 
