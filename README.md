@@ -17,6 +17,12 @@ Bugs and suggestions should be reported [here](https://github.com/eliostvs/tomat
 Changelog
 ---------
 
+### 0.10.0
+
+#### Changed
+
+- The timer, session and settings now emit a payload object instead of a dictionary
+
 ### 0.9.0
 
 #### Changed
