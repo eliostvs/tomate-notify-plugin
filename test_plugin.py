@@ -30,17 +30,11 @@ def plugin(mocker):
         return NotifyPlugin()
 
 
-def test_set_name_and_timeout_when_plugin_is_created(plugin):
-    from gi.repository import Notify
-
-    plugin.notification.set_timeout.assert_called_once_with(Notify.EXPIRES_NEVER)
-
-
 @patch("gi.repository.Notify.init")
 def test_enable_notify_when_plugin_active(init, plugin):
     plugin.activate()
 
-    init.assert_called_with("Tomate")
+    init.assert_called_with("tomate-notify-plugin")
 
 
 @patch("gi.repository.Notify.uninit")

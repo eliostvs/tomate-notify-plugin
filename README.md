@@ -17,6 +17,12 @@ Bugs and suggestions should be reported [here](https://github.com/eliostvs/tomat
 Changelog
 ---------
 
+### 0.11.0
+
+#### Changed
+
+- Remove infinity timeout of the notification
+
 ### 0.10.0
 
 #### Changed

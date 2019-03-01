@@ -31,14 +31,12 @@ class NotifyPlugin(tomate.plugin.Plugin):
     def __init__(self):
         super(NotifyPlugin, self).__init__()
         self.config = graph.get("tomate.config")
-
         self.notification = Notify.Notification.new("tomate-notify-plugin")
-        self.notification.set_timeout(Notify.EXPIRES_NEVER)
 
     @suppress_errors
     def activate(self):
         super(NotifyPlugin, self).activate()
-        Notify.init("Tomate")
+        Notify.init("tomate-notify-plugin")
 
     @suppress_errors
     def deactivate(self):
@@ -65,10 +63,11 @@ class NotifyPlugin(tomate.plugin.Plugin):
         result = self.notification.show()
 
         logger.debug(
-            'action=show.notification title="%s" message="%s" success=%r',
+            'component=notification action=show title="%s" message="%s" success=%r icon=%s',
             title,
             message,
             result,
+            self.icon_path,
         )
 
     @property
