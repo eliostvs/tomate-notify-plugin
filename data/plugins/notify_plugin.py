@@ -53,7 +53,7 @@ class NotifyPlugin(tomate.plugin.Plugin):
 
     @on(Events.Session, [State.stopped])
     def on_session_stopped(self, *args, **kwargs):
-        self.show_notification(title="Session stopped manually.")
+        self.show_notification(title="Session stopped manually")
 
     def get_message(self, session_type: Sessions):
         return (
