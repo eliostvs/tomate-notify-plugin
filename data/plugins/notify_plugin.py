@@ -51,6 +51,10 @@ class NotifyPlugin(tomate.plugin.Plugin):
     def on_session_finished(self, *args, **kwargs):
         self.show_notification(title="The time is up!")
 
+    @on(Events.Session, [State.stopped])
+    def on_session_stopped(self, *args, **kwargs):
+        self.show_notification(title="Session stopped manually.")
+
     def get_message(self, session_type: Sessions):
         return (
             self.messages[session_type.name]["title"],
