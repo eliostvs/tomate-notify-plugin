@@ -17,6 +17,12 @@ Bugs and suggestions should be reported [here](https://github.com/eliostvs/tomat
 Changelog
 ---------
 
+### [Unreleased]
+
+#### Added
+
+- Show notification when session stops
+
 ### 0.11.0
 
 #### Changed
