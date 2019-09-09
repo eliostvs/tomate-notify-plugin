@@ -2,14 +2,14 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from tomate.config import Config
-from tomate.constant import Sessions, State
-from tomate.event import Events
-from tomate.graph import graph
-from tomate.session import SessionPayload
+from tomate.core import Sessions, State
+from tomate.core.config import Config
+from tomate.core.event import Events
+from tomate.core.graph import graph
+from tomate.core.session import SessionPayload
 
 
-def setup_function(function):
+def setup_function():
     graph.providers.clear()
 
     graph.register_instance(
