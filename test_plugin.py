@@ -2,11 +2,11 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from tomate.core import Sessions, State
-from tomate.core.config import Config
-from tomate.core.event import Events
-from tomate.core.graph import graph
-from tomate.core.session import SessionPayload
+from tomate.pomodoro import Sessions, State
+from tomate.pomodoro.config import Config
+from tomate.pomodoro.event import Events
+from tomate.pomodoro.graph import graph
+from tomate.pomodoro.session import SessionPayload
 
 
 def setup_function():
