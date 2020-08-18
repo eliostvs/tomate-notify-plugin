@@ -8,15 +8,18 @@ gi.require_version("Notify", "0.7")
 from gi.repository import Notify
 
 from tomate.pomodoro import Sessions, State
-from tomate.pomodoro.session import SessionPayload
+from tomate.pomodoro.session import Payload as SessionPayload
 from tomate.pomodoro.event import Events, on
 from tomate.pomodoro.graph import graph
 from tomate.pomodoro.plugin import Plugin, suppress_errors
+from tomate.pomodoro.config import Config
 
 logger = logging.getLogger(__name__)
 
 
 class NotifyPlugin(Plugin):
+    config: Config
+
     messages = {
         "pomodoro": {"title": _("Pomodoro"), "content": _("Get back to work!")},
         "shortbreak": {"title": _("Short Break"), "content": _("It's coffee time!")},
@@ -75,4 +78,4 @@ class NotifyPlugin(Plugin):
 
     @property
     def icon_path(self):
-        return self.config.get_icon_path("tomate", 32)
+        return self.config.icon_path("tomate", 32)

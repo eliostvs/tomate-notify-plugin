@@ -1,12 +1,15 @@
 from unittest.mock import Mock, patch
 
+import gi
 import pytest
 
 from tomate.pomodoro import Sessions, State
 from tomate.pomodoro.config import Config
 from tomate.pomodoro.event import Events
 from tomate.pomodoro.graph import graph
-from tomate.pomodoro.session import SessionPayload
+from tomate.pomodoro.session import Payload as SessionPayload
+
+gi.require_version("Notify", "0.7")
 
 
 def setup_function():
@@ -14,20 +17,18 @@ def setup_function():
 
     graph.register_instance(
         "tomate.config",
-        Mock(
-            spec=Config, **{"get_icon_path.return_value": "/path/to/mock/32/tomate.png"}
-        ),
+        Mock(spec=Config, **{"icon_path.return_value": "/path/to/mock/32/tomate.png"}),
     )
 
     Events.Session.receivers.clear()
 
 
 @pytest.fixture()
-def plugin(mocker):
-    with mocker.patch("gi.repository.Notify.Notification.new"):
-        from notify_plugin import NotifyPlugin
+@patch("gi.repository.Notify.Notification.new")
+def plugin(_):
+    from notify_plugin import NotifyPlugin
 
-        return NotifyPlugin()
+    return NotifyPlugin()
 
 
 @patch("gi.repository.Notify.init")
@@ -45,7 +46,6 @@ def test_disable_notify_when_plugin_deactivate(uninit, plugin):
 
 
 def test_show_notification_when_session_starts(plugin):
-    # given
     plugin.activate()
 
     session_type = Sessions.pomodoro
@@ -53,13 +53,16 @@ def test_show_notification_when_session_starts(plugin):
     message = plugin.messages[session_type.name]["content"]
 
     payload = SessionPayload(
-        type=session_type, sessions=[], state=State.started, duration=0, task=0
+        id="1234",
+        state=State.started,
+        type=Sessions.pomodoro,
+        pomodoros=0,
+        duration=25 * 60,
+        task="",
     )
 
-    # when
     Events.Session.send(State.started, payload=payload)
 
-    # then
     plugin.notification.update.assert_called_once_with(
         title, message, "/path/to/mock/32/tomate.png"
     )
@@ -68,31 +71,22 @@ def test_show_notification_when_session_starts(plugin):
 
 
 def test_show_notification_when_sessions_ends(plugin):
-    # given
     plugin.activate()
 
-    # when
     Events.Session.send(State.finished)
 
-    # then
     plugin.notification.update.assert_called_once_with(
         "The time is up!", "", "/path/to/mock/32/tomate.png"
     )
-
     plugin.notification.show.assert_called_once()
 
 
 def test_show_notification_when_session_stops(plugin):
-    # given
     plugin.activate()
 
-    # when
     Events.Session.send(State.stopped)
 
-    # then
     plugin.notification.update.assert_called_once_with(
         "Session stopped manually", "", "/path/to/mock/32/tomate.png"
     )
-
-    # then
     plugin.notification.show.assert_called_once()
