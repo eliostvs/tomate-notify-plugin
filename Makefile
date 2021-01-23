@@ -38,7 +38,7 @@ trigger-build:
 
 release-%:
 	git flow init -d
-	@grep -q '\[Unreleased\]' README.md || (echo 'Create the [Unreleased] section in the changelog first!' && exit 1)
+	@grep -q '\[Unreleased\]' CHANGELOG.md || (echo 'Create the [Unreleased] section in the changelog first!' && exit 1)
 	bumpversion --verbose --commit $*
 	git flow release start $(VERSION)
 	GIT_MERGE_AUTOEDIT=no git flow release finish -m "Merge branch release/$(VERSION)" -T $(VERSION) $(VERSION) -p
