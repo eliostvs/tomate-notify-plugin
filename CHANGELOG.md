@@ -2,7 +2,7 @@
 
 #### Changed
 
-- Using new core API
+- Using new tomate API
 
 ### 0.12.0
 
