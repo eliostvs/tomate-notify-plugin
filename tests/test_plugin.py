@@ -48,41 +48,28 @@ def test_disable_notify_when_plugin_deactivate(uninit, subject):
     uninit.assert_called_with()
 
 
-def test_show_notification_when_session_starts(subject):
+@pytest.mark.parametrize(
+    "state, session, title, message",
+    [
+        (State.started, Sessions.pomodoro, "Pomodoro", "Get back to work!"),
+        (State.started, Sessions.shortbreak, "Short Break", "It's coffee time!"),
+        (State.started, Sessions.longbreak, "Long Break", "Step away from the machine!"),
+        (State.stopped, Sessions.pomodoro, "Session stopped manually", ""),
+        (State.finished, Sessions.pomodoro, "The time is up!", ""),
+    ],
+)
+def test_show_notification_when_session_starts(state, session, title, message, subject):
     subject.activate()
-
-    session_type = Sessions.pomodoro
-    title = subject.messages[session_type.name]["title"]
-    message = subject.messages[session_type.name]["content"]
 
     payload = SessionPayload(
-        id="1234",
-        state=State.started,
-        type=Sessions.pomodoro,
+        duration=0,
+        id="",
         pomodoros=0,
-        duration=25 * 60,
+        state=state,
+        type=session,
     )
 
-    Events.Session.send(State.started, payload=payload)
+    Events.Session.send(state, payload=payload)
 
     subject.notification.update.assert_called_once_with(title, message, IconPath)
-
-    subject.notification.show.assert_called_once()
-
-
-def test_show_notification_when_sessions_ends(subject):
-    subject.activate()
-
-    Events.Session.send(State.finished)
-
-    subject.notification.update.assert_called_once_with("The time is up!", "", IconPath)
-    subject.notification.show.assert_called_once()
-
-
-def test_show_notification_when_session_stops(subject):
-    subject.activate()
-
-    Events.Session.send(State.stopped)
-
-    subject.notification.update.assert_called_once_with("Session stopped manually", "", IconPath)
     subject.notification.show.assert_called_once()
