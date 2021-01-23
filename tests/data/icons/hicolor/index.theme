@@ -1,0 +1,10 @@
+[Icon Theme]
+Name=Hicolor
+Comment=Fallback icon theme
+Hidden=true
+Directories=32x32/apps
+
+[32x32/apps]
+Size=32
+Context=Applications
+Type=Threshold

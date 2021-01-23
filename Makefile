@@ -1,23 +1,27 @@
 .SILENT:
 
-DEBUG        = TOMATE_DEBUG=true
 DOCKER_IMAGE = eliostvs/tomate
 OBS_API_URL  = https://api.opensuse.org:443/trigger/runservice
 PLUGINPATH   = $(CURDIR)/data/plugins
 PYTHONPATH   = PYTHONPATH=$(CURDIR)/tomate:$(PLUGINPATH)
 VERSION      = `cat .bumpversion.cfg | grep current_version | awk '{print $$3}'`
 WORKDIR      = /code
+XDGPATHS		 = XDG_DATA_HOME=$(CURDIR)/tests/data
 
 submodule:
 	git submodule init;
 	git submodule update;
 
+format:
+	black data/plugins/
+
 clean:
 	find . \( -iname "*.pyc" -o -iname "__pycache__" \) -print0 | xargs -0 rm -rf
-	rm -rf *.egg-info/ .coverage build/ .cache .eggs
+	find . \( -iname "*.pyc" -o -iname "__pycache__" -o -iname ".coverage" -o -iname ".cache" \) -print0 | xargs -0 rm -rf
 
 test: clean
-	$(PYTHONPATH) py.test test_plugin.py --cov=$(PLUGINPATH)
+	echo "$(XDGPATHS) $(PYTHONPATH) ARGS=$(ARGS) PYTEST=$(PYTEST)"
+	$(XDGPATHS) $(PYTHONPATH) $(ARGS) py.test $(PYTEST) --cov=$(PLUGINPATH)
 
 docker-clean:
 	docker rmi $(DOCKER_IMAGE) 2> /dev/null || echo $(DOCKER_IMAGE) not found!
