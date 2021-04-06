@@ -3,31 +3,28 @@ from unittest.mock import patch
 
 import gi
 import pytest
-from blinker import Namespace
-from tomate.pomodoro import Sessions, State
+from blinker import NamedSignal
 from tomate.pomodoro.config import Config
 from tomate.pomodoro.event import Events
 from tomate.pomodoro.graph import graph
-from tomate.pomodoro.session import Payload as SessionPayload
+from tomate.pomodoro.session import Payload as SessionPayload, Type as SessionType
 
 gi.require_version("Notify", "0.7")
 
-IconPath = os.path.join(
-    os.path.dirname(__file__), "data", "icons", "hicolor", "32x32", "apps", "tomate.png"
-)
+IconPath = os.path.join(os.path.dirname(__file__), "data", "icons", "hicolor", "32x32", "apps", "tomate.png")
 
 
-@pytest.fixture()
-def dispatcher():
-    return Namespace().signal("dispatcher")
+@pytest.fixture
+def bus():
+    return NamedSignal("Test")
 
 
 @pytest.fixture()
 @patch("gi.repository.Notify.Notification.new")
-def subject(_, dispatcher):
+def subject(_, bus):
     graph.providers.clear()
-    graph.register_instance("tomate.config", Config(dispatcher))
-    Events.Session.receivers.clear()
+    graph.register_instance("tomate.bus", bus)
+    graph.register_instance("tomate.config", Config(bus))
 
     from notify_plugin import NotifyPlugin
 
@@ -49,27 +46,26 @@ def test_disable_notify_when_plugin_deactivate(uninit, subject):
 
 
 @pytest.mark.parametrize(
-    "state, session, title, message",
+    "event,session,title,message",
     [
-        (State.started, Sessions.pomodoro, "Pomodoro", "Get back to work!"),
-        (State.started, Sessions.shortbreak, "Short Break", "It's coffee time!"),
-        (State.started, Sessions.longbreak, "Long Break", "Step away from the machine!"),
-        (State.stopped, Sessions.pomodoro, "Session stopped manually", ""),
-        (State.finished, Sessions.pomodoro, "The time is up!", ""),
+        (Events.SESSION_START, SessionType.POMODORO, "Pomodoro", "Get back to work!"),
+        (Events.SESSION_START, SessionType.SHORT_BREAK, "Short Break", "It's coffee time!"),
+        (Events.SESSION_START, SessionType.LONG_BREAK, "Long Break", "Step away from the machine!"),
+        (Events.SESSION_INTERRUPT, SessionType.POMODORO, "Session stopped manually", ""),
+        (Events.SESSION_END, SessionType.POMODORO, "The time is up!", ""),
     ],
 )
-def test_show_notification_when_session_starts(state, session, title, message, subject):
+def test_show_notification_when_session_starts(event, session, title, message, bus, subject):
     subject.activate()
 
     payload = SessionPayload(
         duration=0,
         id="",
         pomodoros=0,
-        state=state,
         type=session,
     )
 
-    Events.Session.send(state, payload=payload)
+    bus.send(event, payload=payload)
 
     subject.notification.update.assert_called_once_with(title, message, IconPath)
     subject.notification.show.assert_called_once()

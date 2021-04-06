@@ -1,5 +1,6 @@
 import logging
 from locale import gettext as _
+from typing import Tuple
 
 import gi
 
@@ -7,26 +8,19 @@ gi.require_version("Notify", "0.7")
 
 from gi.repository import Notify
 
-from tomate.pomodoro import Sessions, State
-from tomate.pomodoro.session import Payload as SessionPayload
+from tomate.pomodoro.session import Payload as SessionPayload, Type as SessionType
 from tomate.pomodoro.event import Events, on
 from tomate.pomodoro.graph import graph
 from tomate.pomodoro.plugin import Plugin, suppress_errors
-from tomate.pomodoro.config import Config
 
 logger = logging.getLogger(__name__)
 
 
 class NotifyPlugin(Plugin):
-    config: Config
-
     messages = {
-        "pomodoro": {"title": _("Pomodoro"), "content": _("Get back to work!")},
-        "shortbreak": {"title": _("Short Break"), "content": _("It's coffee time!")},
-        "longbreak": {
-            "title": _("Long Break"),
-            "content": _("Step away from the machine!"),
-        },
+        SessionType.POMODORO: {"title": _("Pomodoro"), "content": _("Get back to work!")},
+        SessionType.SHORT_BREAK: {"title": _("Short Break"), "content": _("It's coffee time!")},
+        SessionType.LONG_BREAK: {"title": _("Long Break"), "content": _("Step away from the machine!")},
     }
 
     @suppress_errors
@@ -45,22 +39,22 @@ class NotifyPlugin(Plugin):
         super(NotifyPlugin, self).deactivate()
         Notify.uninit()
 
-    @on(Events.Session, [State.started])
+    @on(Events.SESSION_START)
     def on_session_started(self, _, payload: SessionPayload):
         self.show_notification(*self.get_message(payload.type))
 
-    @on(Events.Session, [State.finished])
-    def on_session_finished(self, *args, **kwargs):
+    @on(Events.SESSION_END)
+    def on_session_finished(self, *_, **__):
         self.show_notification(title="The time is up!")
 
-    @on(Events.Session, [State.stopped])
-    def on_session_stopped(self, *args, **kwargs):
+    @on(Events.SESSION_INTERRUPT)
+    def on_session_stopped(self, *_, **__):
         self.show_notification(title="Session stopped manually")
 
-    def get_message(self, session_type: Sessions):
+    def get_message(self, session: SessionType) -> Tuple[str, str]:
         return (
-            self.messages[session_type.name]["title"],
-            self.messages[session_type.name]["content"],
+            self.messages[session]["title"],
+            self.messages[session]["content"],
         )
 
     @suppress_errors
@@ -69,7 +63,7 @@ class NotifyPlugin(Plugin):
         result = self.notification.show()
 
         logger.debug(
-            'component=notification action=show title="%s" message="%s" success=%r icon=%s',
+            'action=show title="%s" message="%s" success=%r icon=%s',
             title,
             message,
             result,
