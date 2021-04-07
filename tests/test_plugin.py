@@ -4,6 +4,7 @@ from unittest.mock import patch
 import gi
 import pytest
 from blinker import NamedSignal
+
 from tomate.pomodoro.config import Config
 from tomate.pomodoro.event import Events
 from tomate.pomodoro.graph import graph
