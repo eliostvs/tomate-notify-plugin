@@ -28,7 +28,6 @@ def subject(_, bus):
     graph.register_instance("tomate.config", Config(bus))
 
     from notify_plugin import NotifyPlugin
-
     return NotifyPlugin()
 
 
@@ -65,7 +64,6 @@ def test_show_notification_when_session_starts(event, session, title, message, b
         pomodoros=0,
         type=session,
     )
-
     bus.send(event, payload=payload)
 
     subject.notification.update.assert_called_once_with(title, message, IconPath)
