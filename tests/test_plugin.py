@@ -28,6 +28,7 @@ def subject(_, bus):
     graph.register_instance("tomate.config", Config(bus))
 
     from notify_plugin import NotifyPlugin
+
     return NotifyPlugin()
 
 
