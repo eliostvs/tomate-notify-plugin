@@ -15,6 +15,24 @@ VERSION      = `cat .bumpversion.cfg | grep current_version | awk '{print $$3}'`
 WORKDIR      = /code
 XDGPATH      = XDG_DATA_HOME=$(CURDIR)/tests/data
 
+ifeq ($(shell which xvfb-run 1> /dev/null && echo yes),yes)
+	ARGS = xvfb-run -a
+else
+	ARGS ?=
+endif
+
+.PHONY: clean
+clean:
+	find . \( -iname "*.pyc" -o -iname "__pycache__"  -o -iname ".pytest_cache" \) -print0 | xargs -0 rm -rf
+	rm -rf .eggs *.egg-info/ .coverage build/ .cache tests/data/mime/mime.cache
+
+.PHONY: mime
+mime: clean
+	update-mime-database tests/data/mime
+	rm -rf tests/data/mime/{image,aliases,generic-icons,globs,globs2,icons,magic,subclasses,treemagic,types,version,XMLnamespaces}
+
+.PHONY: format
+
 ifeq ($(origin .RECIPEPREFIX), undefined)
 	$(error This Make does not support .RECIPEPREFIX. Please use GNU Make 4.0 or later)
 endif
