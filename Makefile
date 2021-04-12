@@ -1,3 +1,7 @@
+ifeq ($(origin .RECIPEPREFIX), undefined)
+	$(error This Make does not support .RECIPEPREFIX. Please use GNU Make 4.0 or later)
+endif
+  
 .DELETE_ON_ERROR:
 .ONESHELL:
 .SHELLFLAGS   := -eu -o pipefail -c
