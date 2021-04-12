@@ -9,10 +9,7 @@ gi.require_version("Notify", "0.7")
 from gi.repository import Notify
 
 import tomate.pomodoro.plugin as plugin
-from tomate.pomodoro.session import Payload as SessionPayload, Type as SessionType
-from tomate.pomodoro.event import Events, on
-from tomate.pomodoro.graph import graph
-from tomate.pomodoro.plugin import suppress_errors
+from tomate.pomodoro import suppress_errors, graph, Events, on, SessionType, SessionPayload
 
 logger = logging.getLogger(__name__)
 

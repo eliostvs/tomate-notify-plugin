@@ -3,12 +3,9 @@ from unittest.mock import patch
 
 import gi
 import pytest
-from blinker import NamedSignal
 
-from tomate.pomodoro.config import Config
-from tomate.pomodoro.event import Events
-from tomate.pomodoro.graph import graph
-from tomate.pomodoro.session import Payload as SessionPayload, Type as SessionType
+from tomate.pomodoro import Bus, Config, Events, SessionType, graph
+from tomate.ui.testing import create_session_payload
 
 gi.require_version("Notify", "0.7")
 
@@ -16,32 +13,34 @@ IconPath = os.path.join(os.path.dirname(__file__), "data", "icons", "hicolor", "
 
 
 @pytest.fixture
-def bus():
-    return NamedSignal("Test")
+def bus() -> Bus:
+    return Bus()
 
 
-@pytest.fixture()
+@pytest.fixture
 @patch("gi.repository.Notify.Notification.new")
-def subject(_, bus):
+def plugin(_, bus):
     graph.providers.clear()
     graph.register_instance("tomate.bus", bus)
     graph.register_instance("tomate.config", Config(bus))
 
     from notify_plugin import NotifyPlugin
 
-    return NotifyPlugin()
+    instance = NotifyPlugin()
+    instance.connect(bus)
+    return instance
 
 
 @patch("gi.repository.Notify.init")
-def test_enable_notify_when_plugin_active(init, subject):
-    subject.activate()
+def test_enable_notify_when_plugin_active(init, plugin):
+    plugin.activate()
 
     init.assert_called_with("tomate-notify-plugin")
 
 
 @patch("gi.repository.Notify.uninit")
-def test_disable_notify_when_plugin_deactivate(uninit, subject):
-    subject.deactivate()
+def test_disable_notify_when_plugin_deactivate(uninit, plugin):
+    plugin.deactivate()
 
     uninit.assert_called_with()
 
@@ -56,16 +55,11 @@ def test_disable_notify_when_plugin_deactivate(uninit, subject):
         (Events.SESSION_END, SessionType.POMODORO, "The time is up!", ""),
     ],
 )
-def test_show_notification_when_session_starts(event, session, title, message, bus, subject):
-    subject.activate()
+def test_show_notification_when_session_starts(event, session, title, message, bus, plugin):
+    plugin.activate()
 
-    payload = SessionPayload(
-        duration=0,
-        id="",
-        pomodoros=0,
-        type=session,
-    )
+    payload = create_session_payload(type=session)
     bus.send(event, payload=payload)
 
-    subject.notification.update.assert_called_once_with(title, message, IconPath)
-    subject.notification.show.assert_called_once()
+    plugin.notification.update.assert_called_once_with(title, message, IconPath)
+    plugin.notification.show.assert_called_once()
