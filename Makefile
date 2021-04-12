@@ -66,20 +66,9 @@ release-%:
 	git flow release start $(VERSION)
 	GIT_MERGE_AUTOEDIT=no git flow release finish -m "Merge branch release/$(VERSION)" -T $(VERSION) $(VERSION) -p
 
-.PHONY: docker-clean
-docker-clean:
-	docker rmi $(DOCKER_IMAGE) 2> /dev/null || echo $(DOCKER_IMAGE) not found!
-
-.PHONY: docker-pull
-docker-pull:
-	docker pull $(DOCKER_IMAGE)
-
 .PHONY: docker-test
 docker-test:
 	docker run --rm -v $(CURDIR):$(WORKDIR) --workdir $(WORKDIR) $(DOCKER_IMAGE)
-
-.PHONY: docker-all
-docker-all: docker-clean docker-pull docker-test
 
 .PHONY: docker-enter
 docker-enter:
