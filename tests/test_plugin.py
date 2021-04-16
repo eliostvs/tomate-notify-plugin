@@ -3,8 +3,9 @@ from unittest.mock import patch
 
 import gi
 import pytest
+from wiring import Graph
 
-from tomate.pomodoro import Bus, Config, Events, SessionType, graph
+from tomate.pomodoro import Bus, Config, Events, SessionType
 from tomate.ui.testing import create_session_payload
 
 gi.require_version("Notify", "0.7")
@@ -18,8 +19,15 @@ def bus() -> Bus:
 
 
 @pytest.fixture
+def graph() -> Graph:
+    instance = Graph()
+    instance.register_instance(Graph, instance)
+    return instance
+
+
+@pytest.fixture
 @patch("gi.repository.Notify.Notification.new")
-def plugin(_, bus):
+def plugin(_, graph, bus):
     graph.providers.clear()
     graph.register_instance("tomate.bus", bus)
     graph.register_instance("tomate.config", Config(bus))
@@ -27,7 +35,7 @@ def plugin(_, bus):
     from notify_plugin import NotifyPlugin
 
     instance = NotifyPlugin()
-    instance.connect(bus)
+    instance.configure(bus, graph)
     return instance
 
 

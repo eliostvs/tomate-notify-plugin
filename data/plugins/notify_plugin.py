@@ -6,10 +6,11 @@ import gi
 
 gi.require_version("Notify", "0.7")
 
+from wiring import Graph
 from gi.repository import Notify
 
 import tomate.pomodoro.plugin as plugin
-from tomate.pomodoro import suppress_errors, graph, Events, on, SessionType, SessionPayload
+from tomate.pomodoro import Bus, suppress_errors, Events, on, SessionType, SessionPayload
 
 logger = logging.getLogger(__name__)
 
@@ -23,18 +24,22 @@ class NotifyPlugin(plugin.Plugin):
 
     @suppress_errors
     def __init__(self):
-        super(NotifyPlugin, self).__init__()
-        self.config = graph.get("tomate.config")
+        super().__init__()
+        self.config = None
         self.notification = Notify.Notification.new("tomate-notify-plugin")
+
+    def configure(self, bus: Bus, graph: Graph) -> None:
+        super().configure(bus, graph)
+        self.config = graph.get("tomate.config")
 
     @suppress_errors
     def activate(self):
-        super(NotifyPlugin, self).activate()
+        super().activate()
         Notify.init("tomate-notify-plugin")
 
     @suppress_errors
     def deactivate(self):
-        super(NotifyPlugin, self).deactivate()
+        super().deactivate()
         Notify.uninit()
 
     @on(Events.SESSION_START)
