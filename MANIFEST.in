@@ -1,2 +1,2 @@
-include AUTHORS COPYING README.md
+include AUTHORS COPYING README.md CHANGELOG.md
 recursive-include data/plugins *.py *.plugin

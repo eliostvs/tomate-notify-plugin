@@ -1,64 +1,63 @@
 import logging
 from locale import gettext as _
+from typing import Tuple
 
 import gi
 
 gi.require_version("Notify", "0.7")
 
+from wiring import Graph
 from gi.repository import Notify
 
-import tomate.plugin
-from tomate.constant import Sessions, State
-from tomate.session import SessionPayload
-from tomate.event import Events, on
-from tomate.graph import graph
-from tomate.utils import suppress_errors
+import tomate.pomodoro.plugin as plugin
+from tomate.pomodoro import Bus, suppress_errors, Events, on, SessionType, SessionPayload
 
 logger = logging.getLogger(__name__)
 
 
-class NotifyPlugin(tomate.plugin.Plugin):
+class NotifyPlugin(plugin.Plugin):
     messages = {
-        "pomodoro": {"title": _("Pomodoro"), "content": _("Get back to work!")},
-        "shortbreak": {"title": _("Short Break"), "content": _("It's coffee time!")},
-        "longbreak": {
-            "title": _("Long Break"),
-            "content": _("Step away from the machine!"),
-        },
+        SessionType.POMODORO: {"title": _("Pomodoro"), "content": _("Get back to work!")},
+        SessionType.SHORT_BREAK: {"title": _("Short Break"), "content": _("It's coffee time!")},
+        SessionType.LONG_BREAK: {"title": _("Long Break"), "content": _("Step away from the machine!")},
     }
 
     @suppress_errors
     def __init__(self):
-        super(NotifyPlugin, self).__init__()
-        self.config = graph.get("tomate.config")
+        super().__init__()
+        self.config = None
         self.notification = Notify.Notification.new("tomate-notify-plugin")
+
+    def configure(self, bus: Bus, graph: Graph) -> None:
+        super().configure(bus, graph)
+        self.config = graph.get("tomate.config")
 
     @suppress_errors
     def activate(self):
-        super(NotifyPlugin, self).activate()
+        super().activate()
         Notify.init("tomate-notify-plugin")
 
     @suppress_errors
     def deactivate(self):
-        super(NotifyPlugin, self).deactivate()
+        super().deactivate()
         Notify.uninit()
 
-    @on(Events.Session, [State.started])
+    @on(Events.SESSION_START)
     def on_session_started(self, _, payload: SessionPayload):
         self.show_notification(*self.get_message(payload.type))
 
-    @on(Events.Session, [State.finished])
-    def on_session_finished(self, *args, **kwargs):
+    @on(Events.SESSION_END)
+    def on_session_finished(self, *_, **__):
         self.show_notification(title="The time is up!")
 
-    @on(Events.Session, [State.stopped])
-    def on_session_stopped(self, *args, **kwargs):
+    @on(Events.SESSION_INTERRUPT)
+    def on_session_stopped(self, *_, **__):
         self.show_notification(title="Session stopped manually")
 
-    def get_message(self, session_type: Sessions):
+    def get_message(self, session: SessionType) -> Tuple[str, str]:
         return (
-            self.messages[session_type.name]["title"],
-            self.messages[session_type.name]["content"],
+            self.messages[session]["title"],
+            self.messages[session]["content"],
         )
 
     @suppress_errors
@@ -67,7 +66,7 @@ class NotifyPlugin(tomate.plugin.Plugin):
         result = self.notification.show()
 
         logger.debug(
-            'component=notification action=show title="%s" message="%s" success=%r icon=%s',
+            'action=show title="%s" message="%s" success=%r icon=%s',
             title,
             message,
             result,
@@ -76,4 +75,4 @@ class NotifyPlugin(tomate.plugin.Plugin):
 
     @property
     def icon_path(self):
-        return self.config.get_icon_path("tomate", 32)
+        return self.config.icon_path("tomate", 32)
