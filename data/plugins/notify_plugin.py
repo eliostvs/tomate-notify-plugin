@@ -43,15 +43,15 @@ class NotifyPlugin(plugin.Plugin):
         Notify.uninit()
 
     @on(Events.SESSION_START)
-    def on_session_started(self, _, payload: SessionPayload):
+    def on_session_started(self, payload: SessionPayload):
         self.show_notification(*self.get_message(payload.type))
 
     @on(Events.SESSION_END)
-    def on_session_finished(self, *_, **__):
+    def on_session_finished(self,  **__):
         self.show_notification(title="The time is up!")
 
     @on(Events.SESSION_INTERRUPT)
-    def on_session_stopped(self, *_, **__):
+    def on_session_stopped(self, **__):
         self.show_notification(title="Session stopped manually")
 
     def get_message(self, session: SessionType) -> Tuple[str, str]:
