@@ -4,6 +4,6 @@ Module = notify_plugin
 
 [Documentation]
 Author = Elio Esteves Duarte
-Version = 0.14.0
+Version = 0.14.1
 Website = https://github.com/eliostvs/tomate-notify-plugin
 Description = Shows screen notifications
