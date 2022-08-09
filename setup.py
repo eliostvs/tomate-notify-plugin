@@ -47,4 +47,5 @@ setup(
     url="https://github.com/eliostvs/tomate-notify-plugin",
     version="0.14.0",
     zip_safe=False,
+    py_modules=[]
 )
