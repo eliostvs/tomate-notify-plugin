@@ -1,6 +1,8 @@
 Tomate Notify Plugin
 ====================
 
+This plugin has been joined to [tomate-gtk](https://github.com/eliostvs/tomate-gtk).
+
 Tomate is a timer for the Pomodoro Technique.
 This plugin shows OSD notifications when the timer starts and stops.
 
